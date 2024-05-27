@@ -1,0 +1,169 @@
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.36 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create table customers(customer_id int primary key, first_name varchar(50),last_name varchar(50));
+ERROR 1046 (3D000): No database selected
+mysql> show databases;
++-------------------------+
+| Database                |
++-------------------------+
+| information_schema      |
+| mysql                   |
+| performance_schema      |
+| shopping                |
+| studentmanegementsystem |
+| sys                     |
++-------------------------+
+6 rows in set (0.04 sec)
+
+mysql> use shopping;
+Database changed
+mysql> create table customers(customer_id int primary key, first_name varchar(50),last_name varchar(50));
+Query OK, 0 rows affected (0.16 sec)
+
+1.Consider two tables, customers and orders, with the following structures:
+
+Customers Table:
+
+customer_id (Primary Key),first_name,Last_name
+
+Orders Table:
+
+order_id (Primary Key),customer_id (Foreign Key),order_date ,Total_amount
+Write an SQL query to retrieve the first and last names of customers along with the
+order date and total amount of their orders. Use an INNER JOIN to connect the two tables.
+
+mysql> use shopping;
+Database changed
+mysql> create table customers(customer_id int primary key, first_name varchar(50),last_name varchar(50));
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> create table orders(order_id int primary key, customer_id int, order_date date,total_amount decimal(10,2),foreign key(customer_id)references customers(customer_id));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> insert into customers values(101,"shruti","sambharam"),(102,"soni","saggam"),(103,"mona","meragu"),(104,"aarti","sherla"),(105,"rohan","jadhav");
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into orders values (1101,101,"2024-03-11","1851.3"),(1102,102,"2024-04-15","3251.5"),(1103,103,"2024-09-23","6765.4"),(1104,104,"2024-04-13","7865.5"),(1105,105,"2024-11-30","56.43");
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> desc customers;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| customer_id | int         | NO   | PRI | NULL    |       |
+| first_name  | varchar(50) | YES  |     | NULL    |       |
+| last_name   | varchar(50) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+mysql> select * from customers;
++-------------+------------+-----------+
+| customer_id | first_name | last_name |
++-------------+------------+-----------+
+|         101 | shruti     | sambharam |
+|         102 | soni       | saggam    |
+|         103 | mona       | meragu    |
+|         104 | aarti      | sherla    |
+|         105 | rohan      | jadhav    |
++-------------+------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from orders;
++----------+-------------+------------+--------------+
+| order_id | customer_id | order_date | total_amount |
++----------+-------------+------------+--------------+
+|     1101 |         101 | 2024-03-11 |      1851.30 |
+|     1102 |         102 | 2024-04-15 |      3251.50 |
+|     1103 |         103 | 2024-09-23 |      6765.40 |
+|     1104 |         104 | 2024-04-13 |      7865.50 |
+|     1105 |         105 | 2024-11-30 |        56.43 |
++----------+-------------+------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> select first_name,last_name,order_date,total_amount from customers inner join orders on customers.customer_id=orders.customer_id;
++------------+-----------+------------+--------------+
+| first_name | last_name | order_date | total_amount |
++------------+-----------+------------+--------------+
+| shruti     | sambharam | 2024-03-11 |      1851.30 |
+| soni       | saggam    | 2024-04-15 |      3251.50 |
+| mona       | meragu    | 2024-09-23 |      6765.40 |
+| aarti      | sherla    | 2024-04-13 |      7865.50 |
+| rohan      | jadhav    | 2024-11-30 |        56.43 |
++------------+-----------+------------+--------------+
+5 rows in set (0.00 sec)
+
+
+2.Consider two tables, departments and employees, with the following structures:
+
+Departments Table:
+
+department_id (Primary Key),department_name
+
+Employees Table:
+
+employee_id (Primary Key),first_name,last_name,department_id (Foreign Key)
+
+Write an SQL query to retrieve a list of all departments and the names of employees
+who belong to each department. Use a LEFT JOIN to include departments that have no employees
+
+mysql> create table departments(department_id int primary key,department_name varchar(30));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table employees(employee_id int primary key, first_name varchar(30), last_name varchar(30), department_id int ,foreign key(department_id)references departments(department_id));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> insert into departments values(101,"cse"),(102,"it"),(103,"entc"),(104,"aids"),(105,"civil");
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into employees values(11,"jaya","meragu",102),(12,"jay","mergu",101),(13,"jaysha","sharma",104),(14,"kiran","dasi",105),(15,"kahana","joshi",103);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select department_id,department_name,first_name,last_name from departments left join employees on departments.department_id=employees.department_id;
+
+mysql> insert into departments values(106,"");
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> select departments.department_id,departments.department_name,employees.first_name,employees.last_name from departments left join employees on departments.department_id=employees.department_id;
++---------------+-----------------+------------+-----------+
+| department_id | department_name | first_name | last_name |
++---------------+-----------------+------------+-----------+
+|           101 | cse             | jay        | mergu     |
+|           102 | it              | jaya       | meragu    |
+|           103 | entc            | kahana     | joshi     |
+|           104 | aids            | jaysha     | sharma    |
+|           105 | civil           | kiran      | dasi      |
+|           106 |                 | NULL       | NULL      |
++---------------+-----------------+------------+-----------+
+6 rows in set (0.00 sec)
+
+mysql> insert into employees values(16,"radha","balla",106);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select departments.department_id,departments.department_name,employees.first_name,employees.last_name from departments left join employees on departments.department_id=employees.department_id;
++---------------+-----------------+------------+-----------+
+| department_id | department_name | first_name | last_name |
++---------------+-----------------+------------+-----------+
+|           101 | cse             | jay        | mergu     |
+|           102 | it              | jaya       | meragu    |
+|           103 | entc            | kahana     | joshi     |
+|           104 | aids            | jaysha     | sharma    |
+|           105 | civil           | kiran      | dasi      |
+|           106 |                 | radha      | balla     |
++---------------+-----------------+------------+-----------+
+6 rows in set (0.00 sec)
